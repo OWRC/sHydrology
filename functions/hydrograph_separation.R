@@ -1,3 +1,10 @@
+##########################################################
+############## Hydrograph separation ##################### 
+##########################################################
+# By M. Marchildon
+#
+# Aug 21, 2017
+##########################################################
 
 library(zoo)
 
@@ -63,7 +70,7 @@ baseflow_range <- function(dfQ, cArea_km2=NULL, updateProgress=NULL){
   if (is.function(updateProgress)){updateProgress(detail = 'computing Lyne-Hollick..')}
   Qcoll$BF.LH <- digital_filter(Q,k,'lyne-hollick',3)
   if (is.function(updateProgress)){updateProgress(detail = 'computing Chapman-Maxwell..')}
-  Qcoll$BF.Ch <- digital_filter(Q,k,'chapman-maxwell')
+  Qcoll$BF.CM <- digital_filter(Q,k,'chapman-maxwell')
   if (is.function(updateProgress)){updateProgress(detail = 'computing Boughton-Eckhardt..')}
   Qcoll$BF.BE <- digital_filter(Q,k,'boughton-eckhardt')
   if (is.function(updateProgress)){updateProgress(detail = 'computing Jakeman-Hornberger..')}

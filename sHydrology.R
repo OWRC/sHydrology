@@ -1,5 +1,19 @@
-
-
+##########################################################
+################### sHydrology ########################### 
+## A Shiny-Leaflet interface to a stream flow database. ##
+##########################################################
+# By M. Marchildon
+#
+# Aug 21, 2017
+##########################################################
+# R-script is based on data from the Water Survey of Canada
+# and is graciously collected and made available at no cost 
+# by Environment Canada. 
+#
+#
+#-----------------
+# Dependencies:
+#-----------------
 library(leaflet)
 library(shiny)
 library(shinyBS)
