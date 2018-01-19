@@ -1,0 +1,24 @@
+/* code modified from https://github.com/rstudio/shiny-examples/blob/master/063-superzip-example */
+
+/* Customize fonts */
+body, label, input, button, select { 
+  font-family: 'Helvetica Neue', Helvetica;
+  font-weight: 200;
+}
+h1, h2, h3, h4 { font-weight: 400; }
+
+
+#panl {
+  /* main panel */
+  background-color: white;
+  padding: 0 20px 20px 20px;
+  /* cursor: move; */
+  /* Fade out while not hovering */
+  opacity: 0.65;
+  transition: opacity 500ms 100ms;
+}
+#panl:hover {
+  /* Fade in while hovering */
+  opacity: 0.95;
+  transition-delay: 0;
+}

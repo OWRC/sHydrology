@@ -1,3 +1,6 @@
+# Backup directory
+/bak
+
 # History files
 .Rhistory
 .Rapp.history
