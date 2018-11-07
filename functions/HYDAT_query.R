@@ -3,20 +3,24 @@
 ##########################################################
 # By M. Marchildon
 #
-# Jan 19, 2018
+# Nov, 2018
 ##########################################################
 
 library(RSQLite)
 
 
 ###########################################################################################
-## connect to the HYDAT sqlite3 file
+## connect to the HYDAT sqlite3 file (see queries below)
 ###########################################################################################
 dbcnxn <- function(dbFP){
-  dbc <- dbConnect(RSQLite::SQLite(), dbname=dbFP)
-  # get a list of all tables
-  # dbListTables(dbc)  
-  return(dbc)
+  if(!file.exists(dbFP)){
+    print(paste0(" ERROR: ",dbFP," cannot be found"))
+  } else {
+    dbc <- dbConnect(RSQLite::SQLite(), dbname=dbFP)
+    # get a list of all tables
+    # dbListTables(dbc)  
+    return(dbc)
+  }
 }
 
 
@@ -34,26 +38,38 @@ qStaLoc <- function(dbc, prov=NULL){
   # query date ranges
   YRb <- vector('numeric',length=length(tblSta$STATION_NUMBER))
   YRe <- vector('numeric',length=length(tblSta$STATION_NUMBER))
-  cnt <- 0
+  Cnt <- vector('numeric',length=length(tblSta$STATION_NUMBER))
+  Qual <- vector('numeric',length=length(tblSta$STATION_NUMBER))
+  i <- 0
   for (s in tblSta$STATION_NUMBER){
     q <- dbGetQuery(dbc, paste0('select * from DLY_FLOWS where STATION_NUMBER = "',s,'"'))
-    cnt <- cnt + 1
+    i <- i + 1
     if (nrow(q)==0) {
       # print(paste0('no data for station ',s))
-      YRb[cnt] <- NA
-      YRe[cnt] <- NA
+      YRb[i] <- NA
+      YRe[i] <- NA
+      Cnt[i] <- 0
+      Qual[i] <- NA
     } else {
-      YRb[cnt] <- min(q$YEAR)
-      YRe[cnt] <- max(q$YEAR)      
+      YRb[i] <- min(q$YEAR)
+      YRe[i] <- max(q$YEAR) 
+      Cnt[i] <- 365.24*nrow(q)
+      Qual[i] <- (max(q$YEAR)-min(q$YEAR)+1)/nrow(q)
     }
   }
-  tblSta$StartYear <- YRb
-  tblSta$EndYear <- YRe
-  tblSta$sID <- tblSta$STATION_NUMBER
-  tblSta <- tblSta[!is.na(tblSta$StartYear),]
-  tblSta <- tblSta[!is.na(tblSta$EndYear),]
-  colnames(tblSta)[1] <- "sName"
-  colnames(tblSta)[2] <- "sName2"
+  tblSta$YRb <- YRb # StartYear
+  tblSta$YRe <- YRe # EndYear
+  tblSta$CNT <- Cnt
+  tblSta$LID <- tblSta$STATION_NUMBER
+  tblSta$IID <- tblSta$STATION_NUMBER
+  tblSta <- tblSta[!is.na(tblSta$YRb),]
+  tblSta <- tblSta[!is.na(tblSta$YRe),]
+  colnames(tblSta)[1] <- "NAM1"
+  colnames(tblSta)[2] <- "NAM2"
+  colnames(tblSta)[7] <- "LAT"
+  colnames(tblSta)[8] <- "LNG"
+  colnames(tblSta)[9] <- "DA"
+  
   return(tblSta)
 }
 
@@ -74,7 +90,7 @@ qStaCarea <- function(dbc,staID){
 ###########################################################################################
 ## HYDAT temporal Query
 ###########################################################################################
-qTemporal <- function(dbc,staID){
+qTemporalSW <- function(dbc,staID){
   qFlow <- dbGetQuery(dbc, paste0('select * from DLY_FLOWS where STATION_NUMBER = "',staID,'"'))
   # qFlow <- dbGetQuery(dbc, 'select * from DLY_FLOWS where STATION_NUMBER = "02HB002"')
   DTb <- as.Date(paste0(as.numeric(qFlow[1,2]),'-',as.numeric(qFlow[1,3]),'-01'))
@@ -97,13 +113,21 @@ qTemporal <- function(dbc,staID){
     }
   }
   
-  Date <- as.Date(Date)
+  Date <- zoo::as.Date(Date)
   # anyDuplicated(Date)
+  Flag <- as.character(Flag)
   Flag[is.na(Flag)] <- ""
+  Flag[Flag == "B"] <- "Ice Conditions"
+  Flag[Flag == "E"] <- "Estimated"
+  Flag[Flag == "A"] <- "Partial Day"
+  Flag[Flag == "D"] <- "Dry conditions"
+  Flag[Flag == "S"] <- "Sample(s) collected this day"
+  Flag[Flag == "R"] <- "realtime_uncorrected"
+
   hyd <- data.frame(Date,Flow,Flag)
-  # dfQ <- hyd[!is.na(hyd$Date),]
   return(hyd[!is.na(hyd$Date),])
 }
+
 
 
 ###########################################################################################
@@ -143,3 +167,14 @@ qTemporal.many <- function(dbc,stalst){
   hyd <- hyd[!is.na(hyd$Flow),]
   return(hyd)
 }
+
+
+
+
+
+###########################################################################################
+## Query
+###########################################################################################
+idbc <- dbcnxn('dat/Hydat.sqlite3')
+tblSta <- qStaLoc(idbc)
+tblStaMet <- NULL

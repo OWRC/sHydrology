@@ -1,5 +1,7 @@
-# Backup directory
 /bak
+*.sqlite3
+*.Rproj
+YCDB_API_query.R
 
 # History files
 .Rhistory
