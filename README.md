@@ -3,6 +3,8 @@ A Shiny-Leaflet interface and data extractor for WSC HYDAT database.
 
 Currently built to view WSC HYDAT stream flow data [click here](https://www.ec.gc.ca/rhc-wsc/default.asp?lang=En&n=9018B5EC-1).
 
+Can be used in conjunction with [sHydrology analysis tools](https://github.com/maseology/sHydrology_analysis).
+
 ### Current functionality:
  * Select gauge from a map
 	 * filter locations based on period of record
