@@ -2,6 +2,7 @@
 *.sqlite3
 *.Rproj
 YCDB_API_query.R
+findLocations.R
 
 # History files
 .Rhistory
@@ -36,3 +37,4 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+.Rproj.user

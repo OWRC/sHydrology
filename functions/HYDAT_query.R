@@ -14,7 +14,7 @@ library(RSQLite)
 ###########################################################################################
 dbcnxn <- function(dbFP){
   if(!file.exists(dbFP)){
-    print(paste0(" ERROR: ",dbFP," cannot be found"))
+    print(paste0(" *** ERROR: database ",dbFP," cannot be found *** "))
   } else {
     dbc <- dbConnect(RSQLite::SQLite(), dbname=dbFP)
     # get a list of all tables
@@ -72,6 +72,7 @@ qStaLoc <- function(dbc, prov=NULL){
   
   return(tblSta)
 }
+qMetLoc <- function(){} # dummy call
 
 
 ###########################################################################################
