@@ -5,8 +5,8 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.3
-# Nov, 2019
+# v.1.3.1
+# Jan, 2020
 ##########################################################
 
 
@@ -23,10 +23,11 @@ shinyApp(
     div(
       id = "app-content",
       list(tags$head(HTML('<link rel="icon", href="favicon.png",type="image/png" />'))),
-      div(style="padding: 1px 0px; width: '100%'", titlePanel(title="", windowTitle="sHydrology"))
+      div(style="padding: 1px 0px; height: 0px", titlePanel(title="", windowTitle="sHydrology"))
     ),
     
     leafletOutput("map", width = "100%", height = "100%"),
+    windowTitle="sHydrology",
     
     absolutePanel(id = "panl", class = "panel panel-default", fixed = TRUE,
                   draggable = FALSE, top = 10, left = "auto", right = 10, bottom = "auto",
@@ -36,7 +37,7 @@ shinyApp(
                   sliderInput("YRrng", "Select date envelope", min(tblSta$YRb), max(tblSta$YRe),
                               value = c(max(tblSta$YRe)-30,max(tblSta$YRe)), sep=""),
                   
-                  selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30)),
+                  selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50)),
                   checkboxInput("chkMet", "show climate stations", FALSE),
                   
                   h4("Hydrograph preview:"),
@@ -146,12 +147,13 @@ shinyApp(
           if (!is.null(e$clusterId)){
             switch(e$clusterId,
                    { # 1=surface water
-                     withProgress(message = 'Rendering plot..', value = 0.1, {
+                     withProgress(message = 'Querying..', value = 0.1, {
                        starow <- tblSta[tblSta$IID==sta$id,]
                        sta$loc <- starow$LID
                        sta$name <- as.character(starow$NAM1)
                        sta$name2 <- as.character(starow$NAM2)
                        sta$hyd <- qTemporalSW(idbc,sta$id)
+                       incProgress(0.5, detail = 'Rendering plot..')
                        sta$DTb <- min(sta$hyd$Date, na.rm=T)
                        sta$DTe <- max(sta$hyd$Date, na.rm=T)          
                        setProgress(1)
