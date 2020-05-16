@@ -176,6 +176,6 @@ qTemporal.many <- function(dbc,stalst){
 ###########################################################################################
 ## Query
 ###########################################################################################
-idbc <- dbcnxn('dat/Hydat.sqlite3')
-tblSta <- qStaLoc(idbc)
+idbcsw <- dbcnxn('dat/Hydat.sqlite3')
+tblSta <- qStaLoc(idbcsw)
 tblStaMet <- NULL
