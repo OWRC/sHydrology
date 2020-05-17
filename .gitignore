@@ -3,7 +3,7 @@
 *.Rproj
 YCDB_API_query.R
 findLocations.R
-*mobile.*
+mobile*
 /test
 
 # History files
