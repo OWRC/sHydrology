@@ -1,10 +1,10 @@
 /bak
+/test
 *.sqlite3
 *.Rproj
 YCDB_API_query.R
 findLocations.R
-mobile*
-/test
+
 
 # History files
 .Rhistory
