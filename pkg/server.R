@@ -7,12 +7,18 @@
 blueIcon <- makeIcon(
   iconUrl = "ico/blue-map-pin.png",
   iconWidth = 19, iconHeight = 30,
-  iconAnchorX = 10, iconAnchorY = 30
+  iconAnchorX = 10, iconAnchorY = 30,
+  shadowUrl = "ico/shadow-map-pin.png",
+  shadowWidth = 28, shadowHeight = 30,
+  shadowAnchorX = -0.7, shadowAnchorY = 30
 )
 redIcon <- makeIcon(
   iconUrl = "ico/red-map-pin.png",
   iconWidth = 19, iconHeight = 30,
-  iconAnchorX = 10, iconAnchorY = 30
+  iconAnchorX = 10, iconAnchorY = 30,
+  shadowUrl = "ico/shadow-map-pin.png",
+  shadowWidth = 28, shadowHeight = 30,
+  shadowAnchorX = -0.7, shadowAnchorY = 30
 )
 
 # leaflet map
@@ -43,14 +49,17 @@ observe({
   m <- leafletProxy("map") %>%
     clearPopups() %>%
     clearMarkers() %>%
-    clearMarkerClusters() %>%
-    addMarkers(data = d,
+    clearMarkerClusters()
+  
+  if (input$chkSW) {
+    m %>% addMarkers(data = d,
                layerId = ~IID, clusterId = 1,
                lng = ~LNG, lat = ~LAT,
                icon = blueIcon,
                popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',swlnk,LID,'" target="_blank">analyze streamflow data</a>'),
-               clusterOptions = markerClusterOptions()) %>%
-    clearMarkers()
+               clusterOptions = markerClusterOptions())    
+  }
+
   if (input$chkMet) {
     if (is.null(tblStaMet)) qMetLoc()
     if (!is.null(tblStaMet)){
@@ -68,6 +77,8 @@ observe({
                        clusterOptions = markerClusterOptions())
     }
   }
+  
+  m %>% clearMarkers()
 })
 
 filteredDataSW <- reactive({

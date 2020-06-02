@@ -5,8 +5,8 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.5.0
-# May, 2020
+# v.1.5.1
+# June, 2020
 ##########################################################
 
 
@@ -40,6 +40,7 @@ shinyApp(
                               value = c(max(tblSta$YRe)-30,max(tblSta$YRe)), sep=""),
                   
                   selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50)),
+                  checkboxInput("chkSW", "show streamflow stations", TRUE),
                   checkboxInput("chkMet", "show climate stations", FALSE),
                   
                   h4("Hydrograph preview:"),
