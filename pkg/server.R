@@ -20,6 +20,14 @@ redIcon <- makeIcon(
   shadowWidth = 28, shadowHeight = 30,
   shadowAnchorX = -0.7, shadowAnchorY = 30
 )
+greenIcon <- makeIcon(
+  iconUrl = "ico/green-map-pin.png",
+  iconWidth = 19, iconHeight = 30,
+  iconAnchorX = 10, iconAnchorY = 30,
+  shadowUrl = "ico/shadow-map-pin.png",
+  shadowWidth = 28, shadowHeight = 30,
+  shadowAnchorX = -0.7, shadowAnchorY = 30
+)
 
 # leaflet map
 output$map <- renderLeaflet({
@@ -63,17 +71,23 @@ observe({
   if (input$chkMet) {
     if (is.null(tblStaMet)) qMetLoc()
     if (!is.null(tblStaMet)){
-      # m %>% addCircleMarkers(data = filteredDataMet(), # addCircleMarkers
-      #        layerId = ~IID, clusterId = 2,
-      #        lng = ~LNG, lat = ~LAT,
-      #        popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',metlnk,LID,'" target="_blank">analyse climate data</a>'),
-      #        # clusterOptions = markerClusterOptions(),
-      #        color = 'red', radius = 10)
       m %>% addMarkers(data = filteredDataMet(),
                        layerId = ~IID, clusterId = 2,
                        lng = ~LNG, lat = ~LAT,
                        icon = redIcon,
                        popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',metlnk,LID,'" target="_blank">analyze climate data</a>'),
+                       clusterOptions = markerClusterOptions())
+    }
+  }
+
+  if (input$chkGW) {
+    if (is.null(tblGW)) qGWLoc()
+    if (!is.null(tblGW)){
+      m %>% addMarkers(data = filteredDataGW(),
+                       layerId = ~IID, clusterId = 3,
+                       lng = ~LNG, lat = ~LAT,
+                       icon = greenIcon,
+                       popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',gwlnk,LID,'" target="_blank">analyze monitoring data</a>'),
                        clusterOptions = markerClusterOptions())
     }
   }
@@ -89,6 +103,12 @@ filteredDataSW <- reactive({
 filteredDataMet <- reactive({
   p <- as.numeric(input$POR)*365.25
   tblStaMet[tblStaMet$YRe >= input$YRrng[1] & tblStaMet$YRb <= input$YRrng[2] & tblStaMet$pcnt > p,]   
+})
+
+filteredDataGW <- reactive({
+  p <- as.numeric(input$POR)*365.25
+  # tblGW[tblGW$YRe >= input$YRrng[1] & tblGW$YRb <= input$YRrng[2] & tblGW$nWL > p,]
+  tblGW[tblGW$nWL > p,]
 })
 
 # observeEvent(input$map_draw_new_feature, { # see: https://redoakstrategic.com/geoshaper/
@@ -171,6 +191,9 @@ observe({
                  wlnk <- paste0("window.open('",metlnk,sta$loc,"', '_blank')")
                  onclick("expnd", runjs(wlnk))
                },
+               { # 3=groundwater
+                print('todo: groundwater')
+               },
                {print(e)} # default
         )            
       }
@@ -186,6 +209,9 @@ output$dnld <- downloadHandler(
              if(!is.null(sta$hyd)) write.csv(sta$hyd[!is.na(sta$hyd$Flow),], file, row.names = FALSE)               
            },
            { # 2=climate
+             if(!is.null(sta$hyd)) write.csv(sta$hyd, file, row.names = FALSE)
+           },
+           { # 3=climate
              if(!is.null(sta$hyd)) write.csv(sta$hyd, file, row.names = FALSE)
            })
   } 

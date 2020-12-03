@@ -6,5 +6,6 @@ observe({
   if (input$isMobile) {
     toggle('panl')
     updateCheckboxInput(session, 'chkMet', value = TRUE)
+    updateCheckboxInput(session, 'chkGW', value = TRUE)
   }
 })

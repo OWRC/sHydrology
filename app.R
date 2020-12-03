@@ -5,8 +5,8 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.5.1
-# June, 2020
+# v.1.5.2
+# November, 2020
 ##########################################################
 
 
@@ -39,9 +39,10 @@ shinyApp(
                   sliderInput("YRrng", "Select date envelope", min(tblSta$YRb), max(tblSta$YRe),
                               value = c(max(tblSta$YRe)-30,max(tblSta$YRe)), sep=""),
                   
-                  selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50)),
+                  selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
                   checkboxInput("chkSW", "show streamflow stations", TRUE),
                   checkboxInput("chkMet", "show climate stations", FALSE),
+                  checkboxInput("chkGW", "show groundwater monitoring", FALSE),
                   
                   h4("Hydrograph preview:"),
                   dygraphOutput("hydgrph", height = 200), br(),
