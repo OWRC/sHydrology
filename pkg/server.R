@@ -87,7 +87,7 @@ observe({
                        layerId = ~IID, clusterId = 3,
                        lng = ~LNG, lat = ~LAT,
                        icon = greenIcon,
-                       popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',gwlnk,LID,'" target="_blank">analyze monitoring data</a>'),
+                       popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',gwlnk,IID,'" target="_blank">analyze monitoring data</a>'),
                        clusterOptions = markerClusterOptions())
     }
   }
