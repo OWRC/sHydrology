@@ -5,14 +5,14 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.5.2
-# November, 2020
+# v.1.6
+# April, 2021
 ##########################################################
 
 
 source("pkg/pkg.R", local=TRUE)
 source("pkg/shiny_leaflet_functions.R", local=TRUE)
-source("pkg/HYDAT_query.R", local=TRUE)
+source("pkg/YCDB_API_query.R", local=TRUE)
 source("pkg/mobile.R", local=TRUE)
 
 shinyApp(
@@ -61,6 +61,7 @@ shinyApp(
     ### load external code:
     source("pkg/server.R", local = TRUE)$value
     source("pkg/mobile_srv.R", local = TRUE)$value
+    source("pkg/carea.R", local = TRUE)$value
     
     session$onSessionEnded(stopApp)
   }

@@ -106,9 +106,8 @@ filteredDataMet <- reactive({
 })
 
 filteredDataGW <- reactive({
-  p <- as.numeric(input$POR)*365.25
-  # tblGW[tblGW$YRe >= input$YRrng[1] & tblGW$YRb <= input$YRrng[2] & tblGW$nWL > p,]
-  tblGW[tblGW$nWL > p,]
+  p <- as.numeric(input$POR)
+  tblGW[tblGW$YRe >= input$YRrng[1] & tblGW$YRb <= input$YRrng[2] & (tblGW$YRe-tblGW$YRb) > p,]
 })
 
 # observeEvent(input$map_draw_new_feature, { # see: https://redoakstrategic.com/geoshaper/
@@ -165,7 +164,8 @@ observe({
                    sta$hyd <- qTemporalSW(idbcsw,sta$id)
                    incProgress(0.5, detail = 'Rendering plot..')
                    sta$DTb <- min(sta$hyd$Date, na.rm=T)
-                   sta$DTe <- max(sta$hyd$Date, na.rm=T)          
+                   sta$DTe <- max(sta$hyd$Date, na.rm=T) 
+                   drawCarea(starow$LAT,starow$LNG)
                    setProgress(1)
                  })
                  shinyjs::enable("dnld")
@@ -211,7 +211,7 @@ output$dnld <- downloadHandler(
            { # 2=climate
              if(!is.null(sta$hyd)) write.csv(sta$hyd, file, row.names = FALSE)
            },
-           { # 3=climate
+           { # 3=gw monitoring
              if(!is.null(sta$hyd)) write.csv(sta$hyd, file, row.names = FALSE)
            })
   } 
