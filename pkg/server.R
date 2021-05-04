@@ -54,6 +54,9 @@ output$map <- renderLeaflet({
 
 observe({
   d <- filteredDataSW()
+  clus <- NULL
+  if (input$chkCluster) clus <- markerClusterOptions()
+  
   m <- leafletProxy("map") %>%
     clearPopups() %>%
     clearMarkers() %>%
@@ -65,7 +68,7 @@ observe({
                lng = ~LNG, lat = ~LAT,
                icon = blueIcon,
                popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',swlnk,LID,'" target="_blank">analyze streamflow data</a>'),
-               clusterOptions = markerClusterOptions())    
+               clusterOptions = clus)
   }
 
   if (input$chkMet) {
@@ -76,7 +79,7 @@ observe({
                        lng = ~LNG, lat = ~LAT,
                        icon = redIcon,
                        popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',metlnk,LID,'" target="_blank">analyze climate data</a>'),
-                       clusterOptions = markerClusterOptions())
+                       clusterOptions = clus)
     }
   }
 
@@ -88,11 +91,15 @@ observe({
                        lng = ~LNG, lat = ~LAT,
                        icon = greenIcon,
                        popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',gwlnk,IID,'" target="_blank">analyze monitoring data</a>'),
-                       clusterOptions = markerClusterOptions())
+                       clusterOptions = clus)
     }
   }
   
-  m %>% clearMarkers()
+  if (input$chkCluster) {
+    m %>% clearMarkers()  
+  } else {
+    m
+  }
 })
 
 filteredDataSW <- reactive({

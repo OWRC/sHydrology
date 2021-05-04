@@ -47,7 +47,8 @@ shinyApp(
                   h4("Hydrograph preview:"),
                   dygraphOutput("hydgrph", height = 200), br(),
                   div(style="display:inline-block",actionButton("expnd", "Analyze")),
-                  div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))
+                  div(style="display:inline-block",downloadButton('dnld', 'Download CSV')), br(),
+                  checkboxInput("chkCluster", "apply clustering", TRUE)
     ),
     
     mobileDetect('isMobile') ## from: https://g3rv4.com/2017/08/shiny-detect-mobile-browsers
