@@ -3,31 +3,15 @@
 ################################
 ## map/object rendering
 
-# icons
-blueIcon <- makeIcon(
-  iconUrl = "ico/blue-map-pin.png",
-  iconWidth = 19, iconHeight = 30,
-  iconAnchorX = 10, iconAnchorY = 30,
-  shadowUrl = "ico/shadow-map-pin.png",
-  shadowWidth = 28, shadowHeight = 30,
-  shadowAnchorX = -0.7, shadowAnchorY = 30
-)
-redIcon <- makeIcon(
-  iconUrl = "ico/red-map-pin.png",
-  iconWidth = 19, iconHeight = 30,
-  iconAnchorX = 10, iconAnchorY = 30,
-  shadowUrl = "ico/shadow-map-pin.png",
-  shadowWidth = 28, shadowHeight = 30,
-  shadowAnchorX = -0.7, shadowAnchorY = 30
-)
-greenIcon <- makeIcon(
-  iconUrl = "ico/green-map-pin.png",
-  iconWidth = 19, iconHeight = 30,
-  iconAnchorX = 10, iconAnchorY = 30,
-  shadowUrl = "ico/shadow-map-pin.png",
-  shadowWidth = 28, shadowHeight = 30,
-  shadowAnchorX = -0.7, shadowAnchorY = 30
-)
+
+source("pkg/icons.R", local = TRUE)$value
+source("pkg/filteredData.R", local = TRUE)$value
+
+
+
+# reactives
+sta <- reactiveValues(loc=NULL, id=NULL, typ=NULL, name=NULL, name2=NULL, hyd=NULL, DTb=NULL, DTe=NULL)
+
 
 # leaflet map
 output$map <- renderLeaflet({
@@ -52,6 +36,8 @@ output$map <- renderLeaflet({
   # )
 })
 
+
+
 observe({
   d <- filteredDataSW()
   clus <- NULL
@@ -64,22 +50,22 @@ observe({
   
   if (input$chkSW) {
     m %>% addMarkers(data = d,
-               layerId = ~IID, clusterId = 1,
+               layerId = ~IID,
                lng = ~LNG, lat = ~LAT,
                icon = blueIcon,
                popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',swlnk,LID,'" target="_blank">analyze streamflow data</a>'),
-               clusterOptions = clus)
+               clusterId = 1, clusterOptions = clus)
   }
 
   if (input$chkMet) {
     if (is.null(tblStaMet)) qMetLoc()
     if (!is.null(tblStaMet)){
       m %>% addMarkers(data = filteredDataMet(),
-                       layerId = ~IID, clusterId = 2,
+                       layerId = ~IID,
                        lng = ~LNG, lat = ~LAT,
                        icon = redIcon,
                        popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',metlnk,LID,'" target="_blank">analyze climate data</a>'),
-                       clusterOptions = clus)
+                       clusterId = 1, clusterOptions = clus)
     }
   }
 
@@ -87,34 +73,103 @@ observe({
     if (is.null(tblGW)) qGWLoc()
     if (!is.null(tblGW)){
       m %>% addMarkers(data = filteredDataGW(),
-                       layerId = ~IID, clusterId = 3,
+                       layerId = ~IID,
                        lng = ~LNG, lat = ~LAT,
                        icon = greenIcon,
                        popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',gwlnk,IID,'" target="_blank">analyze monitoring data</a>'),
-                       clusterOptions = clus)
+                       clusterId = 1, clusterOptions = clus)
     }
   }
   
+  if (input$chkGWshal) {
+    if (is.null(tblGW)) qGWLoc()
+    if (!is.null(tblGW)){
+      m %>% addMarkers(data = filteredDataGWshallow(),
+                   layerId = ~IID,
+                   lng = ~LNG, lat = ~LAT,
+                   icon = orangeIcon,
+                   popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',gwlnk,IID,'" target="_blank">analyze monitoring data</a>'),
+                   clusterId = 1, clusterOptions = clus)
+    }    
+  }
+  
+  
   if (input$chkCluster) {
-    m %>% clearMarkers()  
+    m %>% clearMarkers()
   } else {
     m
   }
 })
 
-filteredDataSW <- reactive({
-  p <- as.numeric(input$POR)*365.25
-  tblSta[tblSta$YRe >= input$YRrng[1] & tblSta$YRb <= input$YRrng[2] & tblSta$CNT > p,]
-})
 
-filteredDataMet <- reactive({
-  p <- as.numeric(input$POR)*365.25
-  tblStaMet[tblStaMet$YRe >= input$YRrng[1] & tblStaMet$YRb <= input$YRrng[2] & tblStaMet$pcnt > p,]   
-})
-
-filteredDataGW <- reactive({
-  p <- as.numeric(input$POR)
-  tblGW[tblGW$YRe >= input$YRrng[1] & tblGW$YRb <= input$YRrng[2] & (tblGW$YRe-tblGW$YRb) > p,]
+observe({
+  if (!is.null(input$map_marker_click)){
+    e <- input$map_marker_click
+    sta$id <- e$id
+    if (!is.null(sta$id)){
+      if (input$chkSW) {
+        if (sta$id %in% tblSta$IID) {
+          withProgress(message = 'Querying..', value = 0.1, {
+            starow <- tblSta[tblSta$IID==sta$id,]
+            sta$loc <- starow$LID
+            sta$typ <- 1
+            sta$name <- as.character(starow$NAM1)
+            sta$name2 <- as.character(starow$NAM2)
+            sta$hyd <- qTemporalSW(idbcsw,sta$id)
+            incProgress(0.5, detail = 'Rendering plot..')
+            sta$DTb <- min(sta$hyd$Date, na.rm=T)
+            sta$DTe <- max(sta$hyd$Date, na.rm=T) 
+            drawCarea(starow$LAT,starow$LNG)
+            setProgress(1)
+          })
+          shinyjs::enable("dnld")
+          shinyjs::enable("expnd")
+          wlnk <- paste0("window.open('",swlnk,sta$loc,"', '_blank')")
+          onclick("expnd", runjs(wlnk))
+        }
+      }
+      if (input$chkMet) {
+        if (sta$id %in% tblStaMet$IID) {
+           withProgress(message = 'Querying..', value = 0.1, {
+             starow <- tblStaMet[tblStaMet$IID==sta$id,]
+             sta$loc <- starow$LID
+             sta$typ <- 2
+             sta$name <- as.character(starow$NAM1)
+             sta$name2 <- as.character(starow$NAM2)
+             sta$hyd <- qTemporalMET(idbcmet,sta$id)
+             incProgress(0.5, detail = 'Rendering plot..')
+             sta$DTb <- min(sta$hyd$Date, na.rm=T)
+             sta$DTe <- max(sta$hyd$Date, na.rm=T)
+             setProgress(1)
+           })
+           shinyjs::enable("dnld")
+           shinyjs::enable("expnd")
+           wlnk <- paste0("window.open('",metlnk,sta$loc,"', '_blank')")
+           onclick("expnd", runjs(wlnk))
+        }
+      }
+      if (input$chkGW | input$chkGWshal) {
+        if (sta$id %in% tblGW$IID) {
+          withProgress(message = 'Querying..', value = 0.1, {
+            starow <- tblGW[tblGW$IID==sta$id,]
+            sta$loc <- starow$LID
+            sta$typ <- 3
+            sta$name <- as.character(starow$NAM1)
+            sta$name2 <- as.character(starow$NAM2)
+            sta$hyd <- qTemporalGW(idbcgw,sta$id)
+            incProgress(0.5, detail = 'Rendering plot..')
+            sta$DTb <- min(sta$hyd$Date, na.rm=T)
+            sta$DTe <- max(sta$hyd$Date, na.rm=T)
+            setProgress(1)
+          })
+          shinyjs::enable("dnld")
+          shinyjs::enable("expnd")
+          wlnk <- paste0("window.open('",gwlnk,sta$loc,"', '_blank')")
+          onclick("expnd", runjs(wlnk))          
+        }
+      }
+    }
+  }
 })
 
 # observeEvent(input$map_draw_new_feature, { # see: https://redoakstrategic.com/geoshaper/
@@ -147,64 +202,16 @@ output$hydgrph <- renderDygraph({
                dyOptions(axisLineWidth = 1.5, fillGraph = TRUE, stepPlot = TRUE) %>%
                dyAxis(name='y', labelWidth=0, axisLabelWidth=lw) %>%
                dyRangeSelector(strokeColor = '')  
+           },
+           { # 3=gw
+             h1 <- sta$hyd[year(sta$hyd$Date)>1900,]
+             qxts <- xts(h1, order.by = h1$Date)
+             dygraph(qxts) %>%
+               # dyLegend(show = 'always') %>%
+               dyOptions(axisLineWidth = 1.5, fillGraph = TRUE) %>%
+               dyAxis(name='y', labelWidth=0) %>%
+               dyRangeSelector(strokeColor = '')  
            })
-  }
-})
-
-# reactives
-sta <- reactiveValues(loc=NULL, id=NULL, typ=NULL, name=NULL, name2=NULL, hyd=NULL, DTb=NULL, DTe=NULL)
-
-observe({
-  if (!is.null(input$map_marker_click)){
-    e <- input$map_marker_click
-    sta$id <- e$id
-    if (!is.null(sta$id)){
-      if (!is.null(e$clusterId)){
-        switch(e$clusterId,
-               { # 1=surface water
-                 withProgress(message = 'Querying..', value = 0.1, {
-                   starow <- tblSta[tblSta$IID==sta$id,]
-                   sta$loc <- starow$LID
-                   sta$typ <- 1
-                   sta$name <- as.character(starow$NAM1)
-                   sta$name2 <- as.character(starow$NAM2)
-                   sta$hyd <- qTemporalSW(idbcsw,sta$id)
-                   incProgress(0.5, detail = 'Rendering plot..')
-                   sta$DTb <- min(sta$hyd$Date, na.rm=T)
-                   sta$DTe <- max(sta$hyd$Date, na.rm=T) 
-                   drawCarea(starow$LAT,starow$LNG)
-                   setProgress(1)
-                 })
-                 shinyjs::enable("dnld")
-                 shinyjs::enable("expnd")
-                 wlnk <- paste0("window.open('",swlnk,sta$loc,"', '_blank')")
-                 onclick("expnd", runjs(wlnk))
-               },
-               { # 2=climate
-                 withProgress(message = 'Querying..', value = 0.1, {
-                   starow <- tblStaMet[tblStaMet$IID==sta$id,]
-                   sta$loc <- starow$LID
-                   sta$typ <- 2
-                   sta$name <- as.character(starow$NAM1)
-                   sta$name2 <- as.character(starow$NAM2)
-                   sta$hyd <- qTemporalMET(idbcmet,sta$id)
-                   incProgress(0.5, detail = 'Rendering plot..')
-                   sta$DTb <- min(sta$hyd$Date, na.rm=T)
-                   sta$DTe <- max(sta$hyd$Date, na.rm=T)          
-                   setProgress(1)
-                 })
-                 shinyjs::enable("dnld")
-                 shinyjs::enable("expnd")
-                 wlnk <- paste0("window.open('",metlnk,sta$loc,"', '_blank')")
-                 onclick("expnd", runjs(wlnk))
-               },
-               { # 3=groundwater
-                print('todo: groundwater')
-               },
-               {print(e)} # default
-        )            
-      }
-    }
   }
 })
 

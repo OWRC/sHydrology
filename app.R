@@ -42,7 +42,8 @@ shinyApp(
                   selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
                   checkboxInput("chkSW", "show streamflow stations", TRUE),
                   checkboxInput("chkMet", "show climate stations", FALSE),
-                  checkboxInput("chkGW", "show groundwater monitoring", FALSE),
+                  checkboxInput("chkGW", "deep (>20m) groundwater monitoring", FALSE),
+                  checkboxInput("chkGWshal", "shallow groundwater monitoring", FALSE),
                   
                   h4("Hydrograph preview:"),
                   dygraphOutput("hydgrph", height = 200), br(),
