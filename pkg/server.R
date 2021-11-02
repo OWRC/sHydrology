@@ -8,6 +8,7 @@
 
 source("pkg/icons.R", local = TRUE)$value
 source("pkg/filteredData.R", local = TRUE)$value
+source("pkg/dummy.R", local = TRUE)$value
 
 
 

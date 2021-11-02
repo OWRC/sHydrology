@@ -181,13 +181,3 @@ tblSta <- qStaLoc(idbcsw)
 tblStaMet <- NULL
 
 
-
-
-
-
-###########################################################################################
-## Dummy functions used in other deployments
-###########################################################################################
-drawCarea <- function(lat, lng) {
-  # doing nothing
-}
