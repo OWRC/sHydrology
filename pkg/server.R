@@ -1,5 +1,7 @@
 
 
+
+
 ################################
 ## map/object rendering
 
@@ -49,11 +51,13 @@ observe({
     clearMarkerClusters()
   
   if (input$chkSW) {
+    lnk <- ''
+    if (!is.null(swlnk)) {  lnk <- paste0('<br><a href="',swlnk,LID,'" target="_blank">analyze streamflow data</a>') }
     m %>% addMarkers(data = d,
                layerId = ~IID,
                lng = ~LNG, lat = ~LAT,
                icon = blueIcon,
-               popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',swlnk,LID,'" target="_blank">analyze streamflow data</a>'),
+               popup = ~paste0(NAM1,': ',NAM2,lnk),
                clusterId = 1, clusterOptions = clus)
   }
 
