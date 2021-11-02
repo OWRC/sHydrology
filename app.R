@@ -12,7 +12,7 @@
 
 source("pkg/pkg.R", local=TRUE)
 source("pkg/shiny_leaflet_functions.R", local=TRUE)
-source("pkg/sources.R", local=TRUE)
+source("pkg/HYDAT_query.R", local=TRUE)
 source("pkg/mobile.R", local=TRUE)
 
 shinyApp(

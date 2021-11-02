@@ -179,5 +179,3 @@ qTemporal.many <- function(dbc,stalst){
 idbcsw <- dbcnxn('dat/Hydat.sqlite3')
 tblSta <- qStaLoc(idbcsw)
 tblStaMet <- NULL
-
-
