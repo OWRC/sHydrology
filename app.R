@@ -1,5 +1,5 @@
 ##########################################################
-################### sHydrology_map ####################### 
+################### sHydrologyMap ####################### 
 ### A Shiny-Leaflet interface to the HYDAT database.  ####
 ##########################################################
 # Leaflet map
@@ -12,7 +12,7 @@
 
 source("pkg/pkg.R", local=TRUE)
 source("pkg/shiny_leaflet_functions.R", local=TRUE)
-source("pkg/YCDB_API_query.R", local=TRUE)
+source("pkg/HYDAT_query.R", local=TRUE)
 source("pkg/mobile.R", local=TRUE)
 
 shinyApp(
