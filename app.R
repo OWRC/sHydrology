@@ -1,11 +1,11 @@
 ##########################################################
-################### sHydrologyMap ######################## 
-### A Shiny-Leaflet interface to the HYDAT database.  ####
+################### sHydrologyMap ########################
+#### A Shiny-Leaflet interface to the HYDAT database. ####
 ##########################################################
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.6.1
+# v.1.6.2
 # Nov, 2021
 ##########################################################
 
@@ -14,6 +14,7 @@ source("pkg/pkg.R", local=TRUE)
 source("pkg/shiny_leaflet_functions.R", local=TRUE)
 source("pkg/sources.R", local=TRUE)
 source("pkg/mobile.R", local=TRUE)
+
 
 shinyApp(
   ui <- bootstrapPage(
@@ -52,7 +53,6 @@ shinyApp(
                   div(style="display:inline-block",actionButton("expnd", "Analyze")),
                   div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))                  
     ),
-    
     mobileDetect('isMobile') ## from: https://g3rv4.com/2017/08/shiny-detect-mobile-browsers
   ),
   

@@ -1,9 +1,8 @@
 
 
-
-
 ################################
-## map/object rendering
+##### map/object rendering #####
+################################
 
 
 source("pkg/icons.R", local = TRUE)$value
@@ -22,7 +21,7 @@ output$map <- renderLeaflet({
     addTiles(group='OSM') %>% # OpenStreetMap by default
     addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA) | Oak Ridges Moraine Groundwater Program")) %>%
     addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
-    addMarkers(lng = tblSta$LNG, lat = tblSta$LAT, icon = blueIcon) %>%
+    addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
     addLayersControl (
       baseGroups = c("Topo", "OSM", "Toner Lite"),
       options = layersControlOptions(position = "bottomleft")
@@ -54,17 +53,17 @@ observe({
   if (input$chkSW) {
     if (!is.null(swlnk)) {  
       m %>% addMarkers(data = d,
-                       layerId = ~IID,
-                       lng = ~LNG, lat = ~LAT,
+                       layerId = ~INT_ID,
+                       lng = ~LONG, lat = ~LAT,
                        icon = blueIcon,
-                       popup = ~paste0(NAM1,': ',NAM2),
+                       popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',swlnk,LOC_ID,'" target="_blank">analyze streamflow data</a>'),
                        clusterId = 1, clusterOptions = clus)
     } else {
       m %>% addMarkers(data = d,
                        layerId = ~IID,
                        lng = ~LNG, lat = ~LAT,
                        icon = blueIcon,
-                       popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',swlnk,LID,'" target="_blank">analyze streamflow data</a>'),
+                       popup = ~paste0(NAM1,': ',NAM2),
                        clusterId = 1, clusterOptions = clus)
     }
   }
@@ -73,10 +72,10 @@ observe({
     if (is.null(tblStaMet)) qMetLoc()
     if (!is.null(tblStaMet)){
       m %>% addMarkers(data = filteredDataMet(),
-                       layerId = ~IID,
-                       lng = ~LNG, lat = ~LAT,
+                       layerId = ~INT_ID,
+                       lng = ~LONG, lat = ~LAT,
                        icon = redIcon,
-                       popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',metlnk,LID,'" target="_blank">analyze climate data</a>'),
+                       popup = ~paste0(LOC_NAME_ALT1,': ',LOC_NAME,'<br><a href="',metlnk,LOC_ID,'" target="_blank">analyze climate data</a>'),
                        clusterId = 1, clusterOptions = clus)
     }
   }
@@ -85,10 +84,10 @@ observe({
     if (is.null(tblGW)) qGWLoc()
     if (!is.null(tblGW)){
       m %>% addMarkers(data = filteredDataGW(),
-                       layerId = ~IID,
-                       lng = ~LNG, lat = ~LAT,
+                       layerId = ~INT_ID,
+                       lng = ~LONG, lat = ~LAT,
                        icon = greenIcon,
-                       popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',gwlnk,IID,'" target="_blank">analyze monitoring data</a>'),
+                       popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
                        clusterId = 1, clusterOptions = clus)
     }
   }
@@ -97,14 +96,13 @@ observe({
     if (is.null(tblGW)) qGWLoc()
     if (!is.null(tblGW)){
       m %>% addMarkers(data = filteredDataGWshallow(),
-                   layerId = ~IID,
-                   lng = ~LNG, lat = ~LAT,
+                   layerId = ~INT_ID,
+                   lng = ~LONG, lat = ~LAT,
                    icon = orangeIcon,
-                   popup = ~paste0(NAM1,': ',NAM2,'<br><a href="',gwlnk,IID,'" target="_blank">analyze monitoring data</a>'),
+                   popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
                    clusterId = 1, clusterOptions = clus)
     }    
   }
-  
   
   if (input$chkCluster) {
     m %>% clearMarkers()
@@ -120,18 +118,18 @@ observe({
     sta$id <- e$id
     if (!is.null(sta$id)){
       if (input$chkSW) {
-        if (sta$id %in% tblSta$IID) {
+        if (sta$id %in% tblSta$INT_ID) {
           withProgress(message = 'Querying..', value = 0.1, {
-            starow <- tblSta[tblSta$IID==sta$id,]
-            sta$loc <- starow$LID
+            starow <- tblSta[tblSta$INT_ID==sta$id,]
+            sta$loc <- starow$LOC_ID
             sta$typ <- 1
-            sta$name <- as.character(starow$NAM1)
-            sta$name2 <- as.character(starow$NAM2)
+            sta$name <- as.character(starow$LOC_NAME)
+            sta$name2 <- as.character(starow$LOC_NAME_ALT1)
             sta$hyd <- qTemporalSW(idbcsw,sta$id)
             incProgress(0.5, detail = 'Rendering plot..')
             sta$DTb <- min(sta$hyd$Date, na.rm=T)
             sta$DTe <- max(sta$hyd$Date, na.rm=T) 
-            drawCarea(starow$LAT,starow$LNG)
+            drawCarea(starow$LAT,starow$LONG)
             setProgress(1)
           })
           shinyjs::enable("dnld")
@@ -141,13 +139,13 @@ observe({
         }
       }
       if (input$chkMet) {
-        if (sta$id %in% tblStaMet$IID) {
+        if (sta$id %in% tblStaMet$INT_ID) {
            withProgress(message = 'Querying..', value = 0.1, {
-             starow <- tblStaMet[tblStaMet$IID==sta$id,]
-             sta$loc <- starow$LID
+             starow <- tblStaMet[tblStaMet$INT_ID==sta$id,]
+             sta$loc <- starow$LOC_ID
              sta$typ <- 2
-             sta$name <- as.character(starow$NAM1)
-             sta$name2 <- as.character(starow$NAM2)
+             sta$name <- as.character(starow$LOC_NAME_ALT1)
+             sta$name2 <- as.character(starow$LOC_NAME)
              sta$hyd <- qTemporalMET(idbcmet,sta$id)
              incProgress(0.5, detail = 'Rendering plot..')
              sta$DTb <- min(sta$hyd$Date, na.rm=T)
@@ -161,13 +159,13 @@ observe({
         }
       }
       if (input$chkGW | input$chkGWshal) {
-        if (sta$id %in% tblGW$IID) {
+        if (sta$id %in% tblGW$INT_ID) {
           withProgress(message = 'Querying..', value = 0.1, {
-            starow <- tblGW[tblGW$IID==sta$id,]
-            sta$loc <- starow$LID
+            starow <- tblGW[tblGW$INT_ID==sta$id,]
+            sta$loc <- starow$LOC_ID
             sta$typ <- 3
-            sta$name <- as.character(starow$NAM1)
-            sta$name2 <- as.character(starow$NAM2)
+            sta$name <- as.character(starow$LOC_NAME)
+            sta$name2 <- as.character(starow$LOC_NAME_ALT1)
             sta$hyd <- qTemporalGW(idbcgw,sta$id)
             incProgress(0.5, detail = 'Rendering plot..')
             sta$DTb <- min(sta$hyd$Date, na.rm=T)
@@ -206,9 +204,9 @@ output$hydgrph <- renderDygraph({
                dyRangeSelector(strokeColor = '')                 
            },
            { # 2=climate
-             qxts <- xts(cbind(sta$hyd$Pre,sta$hyd$Tem), order.by = sta$hyd$Date)
-             lw <- max(20,25 + (log10(max(sta$hyd$Pre))-2)*8) # dynamic plot fitting
-             colnames(qxts) <- c('Precip','Temp')
+             qxts <- xts(cbind(sta$hyd$precipitation_amount,sta$hyd$mean_air_temperature), order.by = sta$hyd$Date)
+             lw <- max(20,25 + (log10(max(sta$hyd$precipitation_amount))-2)*8) # dynamic plot fitting
+             colnames(qxts) <- c('precipitation_amount','mean_air_temperature')
              dygraph(qxts) %>%
                # dyLegend(show = 'always') %>%
                dyOptions(axisLineWidth = 1.5, fillGraph = TRUE, stepPlot = TRUE) %>%
@@ -235,7 +233,7 @@ output$dnld <- downloadHandler(
              if(!is.null(sta$hyd)) write.csv(sta$hyd[!is.na(sta$hyd$Flow),], file, row.names = FALSE)               
            },
            { # 2=climate
-             if(!is.null(sta$hyd)) write.csv(sta$hyd, file, row.names = FALSE)
+             if(!is.null(sta$hyd)) write.csv(sta$hyd[colSums(!is.na(sta$hyd)) > 0], file, row.names = FALSE)
            },
            { # 3=gw monitoring
              if(!is.null(sta$hyd)) write.csv(sta$hyd, file, row.names = FALSE)
