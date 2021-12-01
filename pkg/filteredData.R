@@ -12,8 +12,6 @@ filteredDataMet <- reactive({
 
 filteredDataGW <- reactive({
   p <- as.numeric(input$POR)
-  # tblGW[tblGW$YRe >= input$YRrng[1] & tblGW$YRb <= input$YRrng[2] & (tblGW$YRe-tblGW$YRb) > p,]
-  # print(tblGW)
   tblGW[tblGW$YRe >= input$YRrng[1] & tblGW$YRb <= input$YRrng[2] & tblGW$SCREEN_TOP_DEPTH_M > 20 & (tblGW$YRe-tblGW$YRb) > p,]
 })
 
