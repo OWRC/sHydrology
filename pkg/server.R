@@ -21,7 +21,8 @@ output$map <- renderLeaflet({
     addTiles(group='OSM') %>% # OpenStreetMap by default
     addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA) | Oak Ridges Moraine Groundwater Program")) %>%
     addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
-    addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
+    # addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
+    setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 9) %>%
     addLayersControl (
       baseGroups = c("Topo", "OSM", "Toner Lite"),
       options = layersControlOptions(position = "bottomleft")
@@ -55,6 +56,7 @@ observe({
       m %>% addMarkers(data = d,
                        layerId = ~INT_ID,
                        lng = ~LONG, lat = ~LAT,
+                       label = ~LOC_NAME,
                        icon = blueIcon,
                        popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',swlnk,LOC_ID,'" target="_blank">analyze streamflow data</a>'),
                        clusterId = 1, clusterOptions = clus)
@@ -62,6 +64,7 @@ observe({
       m %>% addMarkers(data = d,
                        layerId = ~IID,
                        lng = ~LNG, lat = ~LAT,
+                       label = ~NAM1,
                        icon = blueIcon,
                        popup = ~paste0(NAM1,': ',NAM2),
                        clusterId = 1, clusterOptions = clus)
@@ -74,6 +77,7 @@ observe({
       m %>% addMarkers(data = filteredDataMet(),
                        layerId = ~INT_ID,
                        lng = ~LONG, lat = ~LAT,
+                       label = ~LOC_NAME,
                        icon = redIcon,
                        popup = ~paste0(LOC_NAME_ALT1,': ',LOC_NAME,'<br><a href="',metlnk,LOC_ID,'" target="_blank">analyze climate data</a>'),
                        clusterId = 1, clusterOptions = clus)
@@ -86,6 +90,7 @@ observe({
       m %>% addMarkers(data = filteredDataGW(),
                        layerId = ~INT_ID,
                        lng = ~LONG, lat = ~LAT,
+                       label = ~LOC_NAME,
                        icon = greenIcon,
                        popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
                        clusterId = 1, clusterOptions = clus)
@@ -98,6 +103,7 @@ observe({
       m %>% addMarkers(data = filteredDataGWshallow(),
                    layerId = ~INT_ID,
                    lng = ~LONG, lat = ~LAT,
+                   label = ~LOC_NAME,
                    icon = orangeIcon,
                    popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
                    clusterId = 1, clusterOptions = clus)
@@ -174,7 +180,7 @@ observe({
           })
           shinyjs::enable("dnld")
           shinyjs::enable("expnd")
-          wlnk <- paste0("window.open('",gwlnk,sta$loc,"', '_blank')")
+          wlnk <- paste0("window.open('",gwlnk,sta$id,"', '_blank')")
           onclick("expnd", runjs(wlnk))          
         }
       }

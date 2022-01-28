@@ -5,8 +5,8 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.6.2
-# Nov, 2021
+# v.1.6.3
+# Jan, 2022
 ##########################################################
 
 
@@ -43,9 +43,9 @@ shinyApp(
                   selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
                   checkboxInput("chkCluster", "apply marker clustering", FALSE), br(),
                   
-                  checkboxInput("chkSW", "show streamflow stations", TRUE),
+                  checkboxInput("chkSW", "show streamflow stations", FALSE),
                   checkboxInput("chkMet", "show climate stations", FALSE),
-                  checkboxInput("chkGW", "deep (>20m) groundwater monitoring", FALSE),
+                  checkboxInput("chkGW", "deep (>20m) groundwater monitoring", TRUE),
                   checkboxInput("chkGWshal", "shallow groundwater monitoring", FALSE),
                   
                   h4("Hydrograph preview:"),
