@@ -8,6 +8,7 @@ library(leaflet)
 library(zoo)
 library(dygraphs)
 library(xts)
+library(curl)
 library(lubridate)
 
 swlnk <- NULL

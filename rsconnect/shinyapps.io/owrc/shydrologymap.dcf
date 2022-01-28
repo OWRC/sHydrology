@@ -1,0 +1,11 @@
+name: shydrologymap
+title:
+username:
+account: owrc
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5533414
+bundleId: 5519196
+url: https://owrc.shinyapps.io/shydrologymap/
+when: 1643394442.42248
+lastSyncTime: 1643394442.42248
