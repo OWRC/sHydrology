@@ -2,6 +2,7 @@
 /test
 *.sqlite3
 *.Rproj
+sources.R
 YCDB_API_query.R
 ORMGP_carea.R
 findLocations.R
@@ -41,3 +42,6 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 .Rproj.user
+
+
+rsconnect/
