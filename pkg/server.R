@@ -24,7 +24,7 @@ output$map <- renderLeaflet({
     # addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
     setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 9) %>%
     addLayersControl (
-      baseGroups = c("Topo", "OSM", "Toner Lite"),
+      baseGroups = c("OSM", "Topo", "Toner Lite"),
       options = layersControlOptions(position = "bottomleft")
     ) #%>%
   # addDrawToolbar(
@@ -43,8 +43,6 @@ output$map <- renderLeaflet({
 
 observe({
   d <- filteredDataSW()
-  clus <- NULL
-  if (input$chkCluster) clus <- markerClusterOptions()
   
   m <- leafletProxy("map") %>%
     clearPopups() %>%
@@ -59,7 +57,7 @@ observe({
                        label = ~LOC_NAME,
                        icon = blueIcon,
                        popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',swlnk,LOC_ID,'" target="_blank">analyze streamflow data</a>'),
-                       clusterId = 1, clusterOptions = clus)
+                       clusterId = 1, clusterOptions = NULL)
     } else {
       m %>% addMarkers(data = d,
                        layerId = ~IID,
@@ -67,7 +65,7 @@ observe({
                        label = ~NAM1,
                        icon = blueIcon,
                        popup = ~paste0(NAM1,': ',NAM2),
-                       clusterId = 1, clusterOptions = clus)
+                       clusterId = 1, clusterOptions = NULL)
     }
   }
 
@@ -80,7 +78,7 @@ observe({
                        label = ~LOC_NAME,
                        icon = redIcon,
                        popup = ~paste0(LOC_NAME_ALT1,': ',LOC_NAME,'<br><a href="',metlnk,LOC_ID,'" target="_blank">analyze climate data</a>'),
-                       clusterId = 1, clusterOptions = clus)
+                       clusterId = 1, clusterOptions = NULL)
     }
   }
 
@@ -93,7 +91,7 @@ observe({
                        label = ~LOC_NAME,
                        icon = greenIcon,
                        popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
-                       clusterId = 1, clusterOptions = clus)
+                       clusterId = 1, clusterOptions = NULL)
     }
   }
   
@@ -106,15 +104,11 @@ observe({
                    label = ~LOC_NAME,
                    icon = orangeIcon,
                    popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
-                   clusterId = 1, clusterOptions = clus)
+                   clusterId = 1, clusterOptions = NULL)
     }    
   }
   
-  if (input$chkCluster) {
-    m %>% clearMarkers()
-  } else {
-    m
-  }
+  return(m)
 })
 
 
