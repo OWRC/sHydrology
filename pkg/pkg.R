@@ -9,6 +9,7 @@ library(zoo)
 library(dygraphs)
 library(xts)
 library(curl)
+library(rgdal)
 library(lubridate)
 
 swlnk <- NULL

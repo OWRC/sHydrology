@@ -1,0 +1,1 @@
+sta <- reactiveValues(loc=NULL, id=NULL, typ=NULL, name=NULL, name2=NULL, hyd=NULL, DTb=NULL, DTe=NULL)

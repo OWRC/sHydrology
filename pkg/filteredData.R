@@ -6,8 +6,8 @@ filteredDataSW <- reactive({
 })
 
 filteredDataMet <- reactive({
-  p <- as.numeric(input$POR)*365.25
-  tblStaMet[tblStaMet$YRe >= input$YRrng[1] & tblStaMet$YRb <= input$YRrng[2] & tblStaMet$PCNT > p,]   
+  p <- as.numeric(input$POR)
+  tblStaMet[tblStaMet$YRe >= input$YRrng[1] & tblStaMet$YRb <= input$YRrng[2] & tblStaMet$POR > p,]   
 })
 
 filteredDataGW <- reactive({
