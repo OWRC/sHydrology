@@ -2,7 +2,7 @@
 
 # leaflet map
 output$map <- renderLeaflet({
-  ormgp.bound <- rgdal::readOGR("https://raw.githubusercontent.com/OWRC/snapshots/main/shp/bndry/ORMGP_Area_20210205-Drawing-simplWGS.geojson") 
+  ormgp.bound <- rgdal::readOGR("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1") 
   leaflet(ormgp.bound) %>%
     addTiles(group='OSM') %>% # OpenStreetMap by default
     addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA) | Oak Ridges Moraine Groundwater Program")) %>%

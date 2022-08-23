@@ -7,5 +7,7 @@ observe({
     toggle('panl')
     updateCheckboxInput(session, 'chkMet', value = TRUE)
     updateCheckboxInput(session, 'chkGW', value = TRUE)
+    updateCheckboxInput(session, 'chkGWshal', value = TRUE)
+    updateSliderInput(session, 'YRrng', value = c(max(tblSta$YRe),max(tblSta$YRe)))
   }
 })
