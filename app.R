@@ -5,8 +5,8 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.6.4
-# Apr, 2022
+# v.1.6.5
+# Aug, 2022
 ##########################################################
 
 
@@ -29,16 +29,16 @@ shinyApp(
     ),
     
     leafletOutput("map", width = "100%", height = "100%"),
-    windowTitle="sHydrology",
+    # windowTitle="sHydrology",
     
     # modified from superZip (http://shiny.rstudio.com/gallery/superzip-example.html)
     absolutePanel(id = "panl", class = "panel panel-default", fixed = TRUE,
                   draggable = FALSE, top = 10, left = "auto", right = 10, bottom = "auto",
-                  width = 330, height = "auto",
+                  width = 430, height = "auto",
                   
                   h2("Hydrograph explorer"),
                   sliderInput("YRrng", "Select date envelope", min(tblSta$YRb), max(tblSta$YRe),
-                              value = c(max(tblSta$YRe)-30,max(tblSta$YRe)), sep=""),
+                              value = c(max(tblSta$YRe)-30,max(tblSta$YRe)), sep="", width = "auto"),
                   
                   selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
                   
@@ -47,8 +47,9 @@ shinyApp(
                   checkboxInput("chkGW", "deep (>20m) groundwater monitoring", TRUE),
                   checkboxInput("chkGWshal", "shallow groundwater monitoring", FALSE),
                   
-                  h4("Hydrograph preview:"),
-                  dygraphOutput("hydgrph", height = 200), br(),
+                  # h4("Hydrograph preview:"),
+                  div(textOutput("legendDivID")),
+                  dygraphOutput("hydgrph", height = 240), br(),
                   div(style="display:inline-block",actionButton("expnd", "Analyze")),
                   div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))                  
     ),

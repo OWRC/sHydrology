@@ -15,6 +15,7 @@ observe({
             incProgress(0.5, detail = 'Rendering plot..')
             sta$DTb <- min(sta$hyd$Date, na.rm=T)
             sta$DTe <- max(sta$hyd$Date, na.rm=T) 
+            sta$met <- owrc.api.met.catchment(starow$LAT,starow$LONG)
             drawCarea(starow$LAT,starow$LONG)
             setProgress(1)
           })
