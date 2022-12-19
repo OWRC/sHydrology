@@ -1,4 +1,7 @@
 # sHydrologyMap
+
+> ***Deprecated:*** now moved to [sHYDAT](https://github.com/maseology/sHYDAT)
+
 A Shiny-Leaflet interface and data extractor for WSC HYDAT database.
 
 Currently built to view WSC HYDAT stream flow data [click here](https://www.ec.gc.ca/rhc-wsc/default.asp?lang=En&n=9018B5EC-1).
