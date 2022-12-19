@@ -47,4 +47,4 @@ sHydrology hosted on GitHub is released under the MIT license.
 
 ### Contributors
 
-Mason Marchildon P.Eng M.A.Sc, Hydrologist for the [Oak Ridges Moraine Groundwater Program](http://oakridgeswater.ca/)
+Mason Marchildon P.Eng M.A.Sc, Hydrologist for the [Oak Ridges Moraine Groundwater Program](https://github.com/OWRC)
