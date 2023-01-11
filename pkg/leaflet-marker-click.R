@@ -3,6 +3,7 @@ observe({
     e <- input$map_marker_click
     sta$id <- e$id
     if (!is.null(sta$id)){
+      if (is.mobile) print("mobile mode")
       if (input$chkSW) {
         if (sta$id %in% tblSta$INT_ID) {
           withProgress(message = 'Querying..', value = 0.1, {

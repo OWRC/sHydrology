@@ -16,3 +16,4 @@ library(lubridate)
 swlnk <- NULL
 metlnk <- NULL
 idbcmet <- NULL
+is.mobile <- FALSE

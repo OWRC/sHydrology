@@ -6,7 +6,7 @@
 #
 # By M. Marchildon
 # v.1.6.5
-# Aug, 2022
+# Dec, 2022
 ##########################################################
 
 
@@ -25,7 +25,7 @@ shinyApp(
     div(
       id = "app-content",
       list(tags$head(HTML('<link rel="icon", href="favicon.png",type="image/png" />'))),
-      div(style="padding: 1px 0px; height: 0px", titlePanel(title="", windowTitle="sHydrology"))
+      div(style="padding: 1px 0px; height: 0px", titlePanel(title="", windowTitle="sHydrology map"))
     ),
     
     leafletOutput("map", width = "100%", height = "100%"),
@@ -42,15 +42,15 @@ shinyApp(
                   
                   selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
                   
-                  checkboxInput("chkSW", "show streamflow stations", FALSE),
+                  checkboxInput("chkSW", "show streamflow stations", TRUE),
                   checkboxInput("chkMet", "show climate stations", FALSE),
-                  checkboxInput("chkGW", "deep (>20m) groundwater monitoring", TRUE),
+                  checkboxInput("chkGW", "deep (>20m) groundwater monitoring", FALSE),
                   checkboxInput("chkGWshal", "shallow groundwater monitoring", FALSE),
                   
                   # h4("Hydrograph preview:"),
                   div(textOutput("legendDivID")),
                   dygraphOutput("hydgrph", height = 240), br(),
-                  div(style="display:inline-block",actionButton("expnd", "Analyze")),
+                  div(style="display:inline-block",actionButton("expnd", "Open in New Tab")),
                   div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))                  
     ),
     mobileDetect('isMobile') ## from: https://g3rv4.com/2017/08/shiny-detect-mobile-browsers

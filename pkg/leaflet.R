@@ -2,11 +2,13 @@
 
 # leaflet map
 output$map <- renderLeaflet({
-  ormgp.bound <- rgdal::readOGR("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1") 
+  ormgp.bound <- rgdal::readOGR("https://raw.githubusercontent.com/OWRC/geojson/main/ORMGP_region_2022.geojson") #("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1") 
   leaflet(ormgp.bound) %>%
+    addTiles(attribution = '<a href="https://owrc.github.io/interpolants/#data-sources" target="_blank" rel="noopener noreferrer"><b>Source Data</b></a>') %>%
+    
     addTiles(group='OSM') %>% # OpenStreetMap by default
     addFullscreenControl() %>%
-    addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA) | Oak Ridges Moraine Groundwater Program")) %>%
+    addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map style: © OpenTopoMap (CC-BY-SA) — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
     addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
     # addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
     setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 9) %>%
