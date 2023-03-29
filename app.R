@@ -5,13 +5,13 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.6.5
+# v.1.7
 # Dec, 2022
 ##########################################################
 
 
 source("pkg/pkg.R", local=TRUE)
-source("pkg/shiny_leaflet_functions.R", local=TRUE)
+# source("pkg/shiny_leaflet_functions.R", local=TRUE)
 source("pkg/sources.R", local=TRUE)
 source("pkg/mobile.R", local=TRUE)
 
