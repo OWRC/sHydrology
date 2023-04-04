@@ -10,6 +10,8 @@ output$map <- renderLeaflet({
     addFullscreenControl() %>%
     addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map style: © OpenTopoMap (CC-BY-SA) — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
     addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
+    addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
+    
     # addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
     setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 9) %>%
     addPolygons(weight = 2, 
@@ -21,7 +23,7 @@ output$map <- renderLeaflet({
                 options = pathOptions(clickable = FALSE)
     ) %>%
     addLayersControl (
-      baseGroups = c("OSM", "Topo", "Toner Lite"),
+      baseGroups = c("OSM", "Topo", "Toner Lite", "SOLRIS"),
       options = layersControlOptions(position = "bottomleft")
     ) #%>%
   # addDrawToolbar(
@@ -40,6 +42,7 @@ output$map <- renderLeaflet({
 
 observe({
   d <- filteredDataSW()
+  co <- if (input$chkClus) markerClusterOptions() else NULL
   
   m <- leafletProxy("map") %>%
     clearPopups() %>%
@@ -54,7 +57,7 @@ observe({
                        label = ~LOC_NAME,
                        icon = blueIcon,
                        popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',swlnk,LOC_ID,'" target="_blank">analyze streamflow data</a>'),
-                       clusterId = 1, clusterOptions = NULL)
+                       clusterId = 1, clusterOptions = co)
     } else {
       m %>% addMarkers(data = d,
                        layerId = ~IID,
@@ -62,7 +65,7 @@ observe({
                        label = ~NAM1,
                        icon = blueIcon,
                        popup = ~paste0(NAM1,': ',NAM2),
-                       clusterId = 1, clusterOptions = NULL)
+                       clusterId = 1, clusterOptions = co)
     }
   }
   
@@ -75,7 +78,7 @@ observe({
                        label = ~LOC_NAME,
                        icon = redIcon,
                        popup = ~paste0(LOC_NAME_ALT1,': ',LOC_NAME,'<br><a href="',metlnk,LOC_ID,'" target="_blank">analyze climate data</a>'),
-                       clusterId = 1, clusterOptions = NULL)
+                       clusterId = 1, clusterOptions = co)
     }
   }
   
@@ -88,7 +91,7 @@ observe({
                        label = ~LOC_NAME,
                        icon = greenIcon,
                        popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
-                       clusterId = 1, clusterOptions = NULL)
+                       clusterId = 1, clusterOptions = co)
     }
   }
   
@@ -101,7 +104,7 @@ observe({
                        label = ~LOC_NAME,
                        icon = orangeIcon,
                        popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
-                       clusterId = 1, clusterOptions = NULL)
+                       clusterId = 1, clusterOptions = co)
     }    
   }
   

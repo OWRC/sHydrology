@@ -5,8 +5,8 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.7
-# Dec, 2022
+# v.1.8
+# Apr, 2023
 ##########################################################
 
 
@@ -42,6 +42,8 @@ shinyApp(
                   
                   selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
                   
+                  checkboxInput("chkClus", "Enable clustering", FALSE),
+                  hr(),
                   checkboxInput("chkSW", "show streamflow stations", TRUE),
                   checkboxInput("chkMet", "show climate stations", FALSE),
                   checkboxInput("chkGW", "deep (>20m) groundwater monitoring", FALSE),
@@ -50,7 +52,7 @@ shinyApp(
                   # h4("Hydrograph preview:"),
                   div(textOutput("legendDivID")),
                   dygraphOutput("hydgrph", height = 240), br(),
-                  div(style="display:inline-block",actionButton("expnd", "Open in New Tab")),
+                  div(style="display:inline-block",actionButton("expnd", "Open in Analyzer")),
                   div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))                  
     ),
     mobileDetect('isMobile') ## from: https://g3rv4.com/2017/08/shiny-detect-mobile-browsers
