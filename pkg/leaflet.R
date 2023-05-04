@@ -4,13 +4,18 @@
 output$map <- renderLeaflet({
   ormgp.bound <- rgdal::readOGR("https://raw.githubusercontent.com/OWRC/geojson/main/ORMGP_region_2022.geojson") #("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1") 
   leaflet(ormgp.bound) %>%
-    addTiles(attribution = '<a href="https://owrc.github.io/interpolants/#data-sources" target="_blank" rel="noopener noreferrer"><b>Source Data</b></a>') %>%
+    # leafem::addMouseCoordinates() %>%
     
+    addScaleBar(position = "bottomright") %>%
+    
+    addTiles(attribution = '<a href="https://owrc.github.io/interpolants/#data-sources" target="_blank" rel="noopener noreferrer"><b>Source Data</b></a>') %>%
     addTiles(group='OSM') %>% # OpenStreetMap by default
     addFullscreenControl() %>%
     addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map style: © OpenTopoMap (CC-BY-SA) — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
     addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
+    
     addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
+    addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>%
     
     # addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
     setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 9) %>%
@@ -23,7 +28,7 @@ output$map <- renderLeaflet({
                 options = pathOptions(clickable = FALSE)
     ) %>%
     addLayersControl (
-      baseGroups = c("OSM", "Topo", "Toner Lite", "SOLRIS"),
+      baseGroups = c("OSM", "Topo", "Toner Lite", "SOLRIS", "demtest"),
       options = layersControlOptions(position = "bottomleft")
     ) #%>%
   # addDrawToolbar(
