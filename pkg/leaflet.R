@@ -16,6 +16,7 @@ output$map <- renderLeaflet({
     
     addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
     addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>%
+    addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "wtdepth", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
     
     # addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
     setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 9) %>%
@@ -28,7 +29,7 @@ output$map <- renderLeaflet({
                 options = pathOptions(clickable = FALSE)
     ) %>%
     addLayersControl (
-      baseGroups = c("OSM", "Topo", "Toner Lite", "SOLRIS", "demtest"),
+      baseGroups = c("OSM", "Topo", "Toner Lite", "SOLRIS", "demtest", "wtdepth"),
       options = layersControlOptions(position = "bottomleft")
     ) #%>%
   # addDrawToolbar(
