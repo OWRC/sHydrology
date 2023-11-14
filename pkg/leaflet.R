@@ -2,7 +2,7 @@
 
 # leaflet map
 output$map <- renderLeaflet({
-  ormgp.bound <- rgdal::readOGR("https://raw.githubusercontent.com/OWRC/geojson/main/ORMGP_region_2022.geojson") #("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1") 
+  ormgp.bound <- rgdal::readOGR("https://raw.githubusercontent.com/OWRC/geojson/main/ORMGP_region_2023.geojson") #("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1") 
   leaflet(ormgp.bound) %>%
     # leafem::addMouseCoordinates() %>%
     
