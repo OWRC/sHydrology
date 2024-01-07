@@ -1,12 +1,12 @@
 ##########################################################
 ################### sHydrologyMap ########################
-#### A Shiny-Leaflet interface to the HYDAT database. ####
+#### A Shiny-Leaflet interface to the ORMGP database. ####
 ##########################################################
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.9
-# Oct, 2023
+# v.1.11
+# Dec, 2023
 ##########################################################
 
 

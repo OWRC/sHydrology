@@ -8,18 +8,43 @@ output$map <- renderLeaflet({
     
     addScaleBar(position = "bottomright") %>%
     
+    addFullscreenControl() %>%
+    
     addTiles(attribution = '<a href="https://owrc.github.io/interpolants/#data-sources" target="_blank" rel="noopener noreferrer"><b>Source Data</b></a>') %>%
     addTiles(group='OSM') %>% # OpenStreetMap by default
-    addFullscreenControl() %>%
+
     addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map style: © OpenTopoMap (CC-BY-SA) — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
     addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
     
-    addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
-    addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>%
-    addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "wtdepth", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
+    addTiles("https://tile.oakridgeswater.ca/topography/{z}/{x}/{y}", group = "Show topography", options = tileOptions(maxZoom=18, maxNativeZoom=16), providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
+    # addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
+    # addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>%
+    # addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "wtdepth", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
     
+    addLogo(
+      img="ORMGP_logo_vsmall.png", 
+      src= "remote",
+      position="bottomleft", 
+      offset.x = 10,
+      offset.y = 10,
+      width = 294
+    ) %>%
+  
+    addMeasure(
+      position = "topleft",
+      primaryLengthUnit = "meters",
+      primaryAreaUnit = "hectares",
+      secondaryAreaUnit = "acres",
+      activeColor = "#3D535D",
+      completedColor = "#7D4479"
+    ) %>%
+    
+    # addEasyButton(easyButton(
+    #   icon="fa-crosshairs", title="Locate Me",
+    #   onClick=JS("function(btn, map){ map.locate({setView: true}); }"))) %>%
+        
     # addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
-    setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 9) %>%
+    setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 8) %>%
     addPolygons(weight = 2, 
                 color = "black", 
                 fill=FALSE, 
@@ -29,8 +54,8 @@ output$map <- renderLeaflet({
                 options = pathOptions(clickable = FALSE)
     ) %>%
     addLayersControl (
-      baseGroups = c("OSM", "Topo", "Toner Lite", "SOLRIS", "demtest", "wtdepth"),
-      options = layersControlOptions(position = "bottomleft")
+      baseGroups = c("OSM", "Topo", "Toner Lite", "Show topography"), #"SOLRIS", "demtest", "wtdepth"),
+      options = layersControlOptions(position = "topleft")
     ) #%>%
   # addDrawToolbar(
   #   targetGroup='Selected',
@@ -54,15 +79,17 @@ observe({
     clearPopups() %>%
     clearMarkers() %>%
     clearMarkerClusters()
-  
+
   if (input$chkSW) {
     if (!is.null(swlnk)) {  
       m %>% addMarkers(data = d,
                        layerId = ~INT_ID,
                        lng = ~LONG, lat = ~LAT,
-                       label = ~LOC_NAME,
+                       label = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1),
                        icon = blueIcon,
-                       popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',swlnk,LOC_ID,'" target="_blank">analyze streamflow data</a>'),
+                       popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1, #' (',LOC_ID,')',
+                                        '<br><a href="',swlnk,LOC_ID,'" target="_blank">analyze streamflow data</a>',
+                                        '<br><a href="https://wateroffice.ec.gc.ca/report/historical_e.html?stn=',LOC_NAME,'" target="_blank">ECCC source data</a>'),
                        clusterId = 1, clusterOptions = co)
     } else {
       m %>% addMarkers(data = d,
