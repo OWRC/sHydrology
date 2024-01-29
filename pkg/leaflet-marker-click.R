@@ -17,8 +17,11 @@ observe({
             sta$DTb <- min(sta$hyd$Date, na.rm=T)
             sta$DTe <- max(sta$hyd$Date, na.rm=T) 
             sta$met <- getMeteo(starow$LAT,starow$LONG)
-            drawCarea(starow$LAT,starow$LONG)
-            # if (!is.na(starow$cellID)) drawCareaCid(starow$cellID)
+            if (is.na(starow$cellID)) {
+              drawCarea(starow$LAT,starow$LONG)
+            } else {
+              drawCareaCid(starow$cellID)
+            }
             setProgress(1)
           })
           shinyjs::enable("dnld")
