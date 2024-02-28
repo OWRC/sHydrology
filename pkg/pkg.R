@@ -11,7 +11,8 @@ library(zoo)
 library(dygraphs)
 library(xts)
 library(curl)
-library(rgdal)
+# library(rgdal)
+library(sf)
 library(lubridate)
 
 swlnk <- NULL

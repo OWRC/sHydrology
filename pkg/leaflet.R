@@ -2,7 +2,9 @@
 
 # leaflet map
 output$map <- renderLeaflet({
-  ormgp.bound <- rgdal::readOGR("https://raw.githubusercontent.com/OWRC/geojson/main/ORMGP_region_2023.geojson") #("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1") 
+  
+  ormgp.bound <- read_sf("https://raw.githubusercontent.com/OWRC/geojson/main/ORMGP_region_2023.geojson") #("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1")
+  
   leaflet(ormgp.bound) %>%
     # leafem::addMouseCoordinates() %>%
     
@@ -10,26 +12,26 @@ output$map <- renderLeaflet({
     
     addFullscreenControl() %>%
     
-    addTiles(attribution = '<a href="https://owrc.github.io/interpolants/#data-sources" target="_blank" rel="noopener noreferrer"><b>Source Data</b></a>') %>%
+    addTiles(attribution = '<a href="https://owrc.github.io/interpolants/#data-sources" target="_blank" rel="noopener noreferrer"><b>Source Data</b></a> © Oak Ridges Moraine Groundwater Program') %>%
     addTiles(group='OSM') %>% # OpenStreetMap by default
 
-    addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map style: © OpenTopoMap (CC-BY-SA) — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
-    addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
-    
-    addTiles("https://tile.oakridgeswater.ca/topography/{z}/{x}/{y}", group = "Show topography", options = tileOptions(maxZoom=18, maxNativeZoom=16), providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
+    # addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map style: © OpenTopoMap (CC-BY-SA) — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
+    # addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
+
     # addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
-    # addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>%
-    # addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "wtdepth", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
+    addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>%
+    addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "wtdepth", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7)) %>%
+    addTiles("https://tile.oakridgeswater.ca/topography/{z}/{x}/{y}", group = "Add hillshade & Topography", options = providerTileOptions(maxZoom=18, maxNativeZoom=16, attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
     
     addLogo(
-      img="ORMGP_logo_vsmall.png", 
+      img="ORMGP_logo_vsmall.png",
       src= "remote",
-      position="bottomleft", 
+      position="bottomleft",
       offset.x = 10,
       offset.y = 10,
       width = 294
     ) %>%
-  
+
     addMeasure(
       position = "topleft",
       primaryLengthUnit = "meters",
@@ -45,18 +47,19 @@ output$map <- renderLeaflet({
         
     # addMarkers(lng = tblSta$LONG, lat = tblSta$LAT, icon = blueIcon) %>%
     setView(lng = mean(tblSta$LONG), lat = mean(tblSta$LAT), zoom = 8) %>%
-    addPolygons(weight = 2, 
-                color = "black", 
-                fill=FALSE, 
-                dashArray = c(10, 5), 
-                opacity = .8, 
-                group = "ORMGP jurisdiction", 
+    addPolygons(weight = 2,
+                color = "black",
+                fill=FALSE,
+                dashArray = c(10, 5),
+                opacity = .8,
+                group = "ORMGP jurisdiction",
                 options = pathOptions(clickable = FALSE)
     ) %>%
     addLayersControl (
-      baseGroups = c("OSM", "Topo", "Toner Lite", "Show topography"), #"SOLRIS", "demtest", "wtdepth"),
+      overlayGroups = "Add hillshade & Topography",
+      baseGroups = c("OSM", "wtdepth", "demtest"), #"SOLRIS", "Topo", "Toner Lite"),
       options = layersControlOptions(position = "topleft")
-    ) #%>%
+    ) %>% hideGroup("Add hillshade & Topography") #%>%
   # addDrawToolbar(
   #   targetGroup='Selected',
   #   polylineOptions=FALSE,
@@ -73,7 +76,7 @@ output$map <- renderLeaflet({
 
 observe({
   d <- filteredDataSW()
-  co <- if (input$chkClus) markerClusterOptions() else NULL
+  co <- NULL #if (input$chkClus) markerClusterOptions() else NULL
   
   m <- leafletProxy("map") %>%
     clearPopups() %>%
@@ -105,39 +108,50 @@ observe({
   if (input$chkMet) {
     if (is.null(tblStaMet)) qMetLoc()
     if (!is.null(tblStaMet)){
-      m %>% addMarkers(data = filteredDataMet(),
-                       layerId = ~INT_ID,
-                       lng = ~LONG, lat = ~LAT,
-                       label = ~LOC_NAME,
-                       icon = redIcon,
-                       popup = ~paste0(LOC_NAME_ALT1,': ',LOC_NAME,'<br><a href="',metlnk,LOC_ID,'" target="_blank">analyze climate data</a>'),
-                       clusterId = 1, clusterOptions = co)
+      df <- filteredDataMet()
+      if (nrow(df)>0) {
+        m %>% addMarkers(data = df,
+                         layerId = ~INT_ID,
+                         lng = ~LONG, lat = ~LAT,
+                         label = ~LOC_NAME,
+                         icon = redIcon,
+                         popup = ~paste0(LOC_NAME_ALT1,': ',LOC_NAME,
+                                         '<br><a href="',metlnk,LOC_ID,'" target="_blank">analyze climate data</a>',
+                                         '<br><a href="https://climate.weather.gc.ca/climate_data/daily_data_e.html?StationID=',aes_station_id,'" target="_blank">ECCC source data</a>'),
+                         clusterId = 1, clusterOptions = co)        
+      }
     }
   }
   
   if (input$chkGW) {
     if (is.null(tblGW)) qGWLoc()
     if (!is.null(tblGW)){
-      m %>% addMarkers(data = filteredDataGW(),
-                       layerId = ~INT_ID,
-                       lng = ~LONG, lat = ~LAT,
-                       label = ~LOC_NAME,
-                       icon = greenIcon,
-                       popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
-                       clusterId = 1, clusterOptions = co)
+      df <- filteredDataGW()
+      if (nrow(df)>0) {
+        m %>% addMarkers(data = df,
+                         layerId = ~INT_ID,
+                         lng = ~LONG, lat = ~LAT,
+                         label = ~LOC_NAME,
+                         icon = greenIcon,
+                         popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
+                         clusterId = 1, clusterOptions = co)        
+      }
     }
   }
   
   if (input$chkGWshal) {
     if (is.null(tblGW)) qGWLoc()
     if (!is.null(tblGW)){
-      m %>% addMarkers(data = filteredDataGWshallow(),
-                       layerId = ~INT_ID,
-                       lng = ~LONG, lat = ~LAT,
-                       label = ~LOC_NAME,
-                       icon = orangeIcon,
-                       popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
-                       clusterId = 1, clusterOptions = co)
+      df <- filteredDataGWshallow()
+      if (nrow(df)>0) {
+        m %>% addMarkers(data = df,
+                         layerId = ~INT_ID,
+                         lng = ~LONG, lat = ~LAT,
+                         label = ~LOC_NAME,
+                         icon = orangeIcon,
+                         popup = ~paste0(LOC_NAME,': ',LOC_NAME_ALT1,'<br><a href="',gwlnk,INT_ID,'" target="_blank">analyze monitoring data</a>'),
+                         clusterId = 1, clusterOptions = co)        
+      }
     }    
   }
   

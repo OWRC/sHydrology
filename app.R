@@ -5,8 +5,8 @@
 # Leaflet map
 #
 # By M. Marchildon
-# v.1.11
-# Dec, 2023
+# v.1.13
+# Feb, 2024
 ##########################################################
 
 
@@ -42,7 +42,7 @@ shinyApp(
                   
                   selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
                   
-                  checkboxInput("chkClus", "Enable clustering", FALSE),
+                  # checkboxInput("chkClus", "Enable clustering", FALSE),
                   hr(),
                   checkboxInput("chkSW", "show streamflow stations", TRUE),
                   checkboxInput("chkMet", "show climate stations", FALSE),
