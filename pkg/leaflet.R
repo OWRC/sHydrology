@@ -21,6 +21,8 @@ output$map <- renderLeaflet({
     # addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
     addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>%
     addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "wtdepth", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7)) %>%
+    addTiles("https://tile.oakridgeswater.ca/landuse23/{z}/{x}/{y}", group = "Land Use", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7, maxNativeZoom = 16)) %>%
+    addTiles("https://tile.oakridgeswater.ca/surfgeo23/{z}/{x}/{y}", group = "Surficial Geology", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7, maxNativeZoom = 16)) %>%
     addTiles("https://tile.oakridgeswater.ca/topography/{z}/{x}/{y}", group = "Add hillshade & Topography", options = providerTileOptions(maxZoom=18, maxNativeZoom=16, attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
     
     addLogo(
@@ -57,7 +59,7 @@ output$map <- renderLeaflet({
     ) %>%
     addLayersControl (
       overlayGroups = "Add hillshade & Topography",
-      baseGroups = c("OSM", "wtdepth", "demtest"), #"SOLRIS", "Topo", "Toner Lite"),
+      baseGroups = c("OSM", "wtdepth", "Land Use", "Surficial Geology", "demtest"), #"SOLRIS", "Topo", "Toner Lite"),
       options = layersControlOptions(position = "topleft")
     ) %>% hideGroup("Add hillshade & Topography") #%>%
   # addDrawToolbar(
