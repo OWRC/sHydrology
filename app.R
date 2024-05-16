@@ -35,25 +35,28 @@ shinyApp(
     absolutePanel(id = "panl", class = "panel panel-default", fixed = TRUE,
                   draggable = FALSE, top = 10, left = "auto", right = 10, bottom = "auto",
                   width = 430, height = "auto",
+                  HTML('<button style="float:right;background-color:white;border:white;" data-toggle="collapse" data-target="#pnl">&#9866;</button>'),
                   
-                  h2("Hydrograph explorer"),
-                  sliderInput("YRrng", "Select date envelope", min(tblSta$YRb), max(tblSta$YRe),
-                              value = c(max(tblSta$YRe)-30,max(tblSta$YRe)), sep="", width = "auto"),
-                  
-                  selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
-                  
-                  # checkboxInput("chkClus", "Enable clustering", FALSE),
-                  hr(),
-                  checkboxInput("chkSW", "show streamflow stations", TRUE),
-                  checkboxInput("chkMet", "show climate stations", FALSE),
-                  checkboxInput("chkGW", "deep (>20m) groundwater monitoring", FALSE),
-                  checkboxInput("chkGWshal", "shallow groundwater monitoring", FALSE),
-                  
-                  # h4("Hydrograph preview:"),
-                  div(textOutput("legendDivID")),
-                  dygraphOutput("hydgrph", height = 240), br(),
-                  div(style="display:inline-block",actionButton("expnd", "Open in Analyzer")),
-                  div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))                  
+                  tags$div(id = 'pnl',  class="panel-collapse collapse in",
+                    h2("Hydrograph explorer"),
+                    sliderInput("YRrng", "Select date envelope", min(tblSta$YRb), max(tblSta$YRe),
+                                value = c(max(tblSta$YRe)-30,max(tblSta$YRe)), sep="", width = "auto"),
+                    
+                    selectInput("POR", "minimum period of length/count of data", c("no limit" = 0, "5yr" = 5, "10yr" = 10, "30yr" = 30, "50yr" = 50, "75yr" = 75, "100yr" = 100)),
+                    
+                    # checkboxInput("chkClus", "Enable clustering", FALSE),
+                    hr(),
+                    checkboxInput("chkSW", "show streamflow stations", TRUE),
+                    checkboxInput("chkMet", "show climate stations", FALSE),
+                    checkboxInput("chkGW", "deep (>20m) groundwater monitoring", FALSE),
+                    checkboxInput("chkGWshal", "shallow groundwater monitoring", FALSE),
+                    
+                    # h4("Hydrograph preview:"),
+                    div(textOutput("legendDivID")),
+                    dygraphOutput("hydgrph", height = 240), br(),
+                    div(style="display:inline-block",actionButton("expnd", "Open in Analyzer")),
+                    div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))    
+                  )
     ),
     mobileDetect('isMobile') ## from: https://g3rv4.com/2017/08/shiny-detect-mobile-browsers
   ),

@@ -6,21 +6,19 @@ output$map <- renderLeaflet({
   ormgp.bound <- read_sf("https://raw.githubusercontent.com/OWRC/geojson/main/ORMGP_region_2023.geojson") #("https://www.dropbox.com/s/lrdycz5eomw09hr/ORMGP_Area_20210205-Drawing-simplWGS.geojson?dl=1")
   
   leaflet(ormgp.bound) %>%
-    # leafem::addMouseCoordinates() %>%
+    addMouseCoordinates() %>%
     
     addScaleBar(position = "bottomright") %>%
     
     addFullscreenControl() %>%
     
     addTiles(attribution = '<a href="https://owrc.github.io/interpolants/#data-sources" target="_blank" rel="noopener noreferrer"><b>Source Data</b></a> © Oak Ridges Moraine Groundwater Program') %>%
-    addTiles(group='OSM') %>% # OpenStreetMap by default
-
-    # addProviderTiles(providers$OpenTopoMap, group='Topo', options = providerTileOptions(attribution=" Map style: © OpenTopoMap (CC-BY-SA) — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
-    # addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite", options = providerTileOptions(attribution=" Map tiles by Stamen Design, CC BY 3.0 — Map data © OpenStreetMap contributors | Oak Ridges Moraine Groundwater Program")) %>%
+    addTiles(group='OSM') %>%
 
     # addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
-    addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>%
-    addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "wtdepth", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7)) %>%
+    # addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>% maxZoom = 18, 
+    addTiles("https://tile.oakridgeswater.ca/lidar24/{z}/{x}/{y}", group = "High definition DEM", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Programx", maxNativeZoom = 16)) %>%
+    addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "Depth to Watertable", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16, opacity=.7)) %>%
     addTiles("https://tile.oakridgeswater.ca/landuse23/{z}/{x}/{y}", group = "Land Use", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7, maxNativeZoom = 16)) %>%
     addTiles("https://tile.oakridgeswater.ca/surfgeo23/{z}/{x}/{y}", group = "Surficial Geology", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7, maxNativeZoom = 16)) %>%
     addTiles("https://tile.oakridgeswater.ca/topography/{z}/{x}/{y}", group = "Add hillshade & Topography", options = providerTileOptions(maxZoom=18, maxNativeZoom=16, attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
@@ -59,7 +57,7 @@ output$map <- renderLeaflet({
     ) %>%
     addLayersControl (
       overlayGroups = "Add hillshade & Topography",
-      baseGroups = c("OSM", "wtdepth", "Land Use", "Surficial Geology", "demtest"), #"SOLRIS", "Topo", "Toner Lite"),
+      baseGroups = c("OSM", "DEM", "Depth to Watertable", "Land Use", "Surficial Geology"), #"SOLRIS", "Topo", "Toner Lite"),
       options = layersControlOptions(position = "topleft")
     ) %>% hideGroup("Add hillshade & Topography") #%>%
   # addDrawToolbar(
