@@ -3,8 +3,9 @@ output$hydgrph <- renderDygraph({
   if (!is.null(sta$hyd)){
     switch(sta$typ,
            { # 1=surface water
-             qFlw <- xts(sta$hyd$Flow, order.by = sta$hyd$Date)
-             lw <- max(20,25 + (log10(max(sta$hyd$Flow))-2)*8) # dynamic plot fitting
+             hydr <- sta$hyd[sta$hyd$Flow>0,]
+             qFlw <- xts(hydr$Flow, order.by = hydr$Date)
+             lw <- max(20,25 + (log10(max(hydr$Flow))-2)*8) # dynamic plot fitting
              if( is.null(sta$met) ) {
                qxts <- qFlw
                colnames(qxts) <- 'Discharge'
@@ -16,7 +17,7 @@ output$hydgrph <- renderDygraph({
                  dyRangeSelector(strokeColor = '') %>% 
                  dyLegend(labelsDiv = "legendDivID")              
              } else {
-               df2 <- sta$hyd %>% inner_join(sta$met, by="Date")
+               df2 <- hydr %>% inner_join(sta$met, by="Date")
                qRf <- xts(df2$Rf, order.by = df2$Date)
                qSm <- xts(df2$Sm, order.by = df2$Date)
                qxts <- cbind(qFlw,qRf,qSm)
