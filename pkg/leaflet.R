@@ -18,7 +18,7 @@ output$map <- renderLeaflet({
     # addTiles("https://tile.oakridgeswater.ca/solris/{z}/{x}/{y}", group = "SOLRIS", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program")) %>%
     # addTiles("https://tile.oakridgeswater.ca/dem/{z}/{x}/{y}", group = "demtest", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16)) %>% maxZoom = 18,
     addTiles("https://tile.oakridgeswater.ca/basemap/{z}/{x}/{y}", group = "ORMGP basemap", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Programx", maxNativeZoom = 17)) %>%
-    addTiles("https://tile.oakridgeswater.ca/lidar24/{z}/{x}/{y}", group = "High definition DEM", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Programx", maxNativeZoom = 16)) %>%
+    addTiles("https://tile.oakridgeswater.ca/lidar24/{z}/{x}/{y}", group = "High definition DEM", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Programx", maxNativeZoom = 18)) %>%
     addTiles("https://tile.oakridgeswater.ca/wtdepth/{z}/{x}/{y}", group = "Depth to Watertable", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", maxNativeZoom = 16, opacity=.7)) %>%
     addTiles("https://tile.oakridgeswater.ca/landuse23/{z}/{x}/{y}", group = "Land Use", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7, maxNativeZoom = 16)) %>%
     addTiles("https://tile.oakridgeswater.ca/surfgeo23/{z}/{x}/{y}", group = "Surficial Geology", options = providerTileOptions(attribution=" © Oak Ridges Moraine Groundwater Program", opacity=.7, maxNativeZoom = 16)) %>%
