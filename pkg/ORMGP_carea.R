@@ -1,6 +1,6 @@
 
-capi <- "http://golang.oakridgeswater.ca:8080/carea/"
-cidapi <- "http://golang.oakridgeswater.ca:8080/careacid/"
+capi <- "http://golang.oakridgeswater.ca:8080/carea/" # "http://localhost:8081/carea/" # 
+cidapi <- "http://golang.oakridgeswater.ca:8080/careacid/" # "http://localhost:8081/careacid/" # 
 
 observe({
   leafletProxy("map") %>% clearPopups()
@@ -9,8 +9,9 @@ observe({
   
   lat <- round(event$lat,3)
   lng <- round(event$lng, 3)
-  qstr <- paste0(capi,event$lat,"/",event$lng)
-  geojson <- readLines(qstr) %>% paste(collapse = "\n")
+  url <- paste0(capi,event$lat,"/",event$lng)
+  print(url)
+  geojson <- readLines(url) %>% paste(collapse = "\n")
   isolate(leafletProxy("map") %>%
             clearGeoJSON() %>%
             addPopups(event$lng,event$lat,paste0(lat, ', ', lng,
