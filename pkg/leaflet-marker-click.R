@@ -18,14 +18,15 @@ observe({
             sta$DTe <- max(sta$hyd$Date, na.rm=T) 
             sta$met <- getMeteo(starow$LAT,starow$LONG)
             if (is.na(starow$cellID)) {
-              drawCarea(starow$LAT,starow$LONG)
+              sta$ca <- drawCarea(starow$LAT,starow$LONG)
             } else {
-              drawCareaCid(starow$cellID)
+              sta$ca <- drawCareaCid(starow$cellID)
             }
             setProgress(1)
           })
           shinyjs::enable("dnld")
           shinyjs::enable("expnd")
+          # shinyjs::enable("dnldCA")
           wlnk <- paste0("window.open('",swlnk,sta$loc,"', '_blank')")
           onclick("expnd", runjs(wlnk))
         }
@@ -46,6 +47,7 @@ observe({
           })
           shinyjs::enable("dnld")
           shinyjs::enable("expnd")
+          # shinyjs::disable("dnldCA")
           wlnk <- paste0("window.open('",metlnk,sta$loc,"', '_blank')")
           onclick("expnd", runjs(wlnk))
         }
@@ -66,6 +68,7 @@ observe({
           })
           shinyjs::enable("dnld")
           shinyjs::enable("expnd")
+          # shinyjs::disable("dnldCA")
           wlnk <- paste0("window.open('",gwlnk,sta$id,"', '_blank')")
           onclick("expnd", runjs(wlnk))          
         }

@@ -22,3 +22,13 @@ output$dnld <- downloadHandler(
            })
   } 
 )
+
+
+output$dnldCA <- downloadHandler(
+  filename <- function() { paste0(sta$name, '.geojson') },
+  content <- function(file) {
+    print('here')
+    if(!is.null(sta$ca)) write(sta$ca, file)
+  } 
+)
+

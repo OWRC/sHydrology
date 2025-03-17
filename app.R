@@ -54,8 +54,9 @@ shinyApp(
                     # h4("Hydrograph preview:"),
                     div(textOutput("legendDivID")),
                     dygraphOutput("hydgrph", height = 240), br(),
-                    div(style="display:inline-block",actionButton("expnd", "Open in Analyzer")),
-                    div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))    
+                    div(style="display:inline-block",actionButton("expnd", "Open Timeseries")),
+                    div(style="display:inline-block",downloadButton('dnld', 'Download CSV'))#,
+                    # div(style="display:inline-block",downloadButton('dnldCA', 'Download CA'))
                   )
     ),
     mobileDetect('isMobile') ## from: https://g3rv4.com/2017/08/shiny-detect-mobile-browsers
@@ -65,6 +66,7 @@ shinyApp(
   server <- function(input, output, session) {
     shinyjs::disable("dnld")
     shinyjs::disable("expnd")
+    # shinyjs::disable("dnldCA")
     
     ### load external code:
     source("pkg/server.R", local = TRUE)$value
