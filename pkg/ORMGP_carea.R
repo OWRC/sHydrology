@@ -3,7 +3,7 @@ capi <- "http://golang.oakridgeswater.ca:8080/carea/" # "http://localhost:8081/c
 cidapi <- "http://golang.oakridgeswater.ca:8080/careacid/" # "http://localhost:8081/careacid/" # 
 
 get_bbox <- function(geojson) {
-  print(geojson)
+  # print(geojson)
   geojson_parsed <- fromJSON(geojson, simplifyVector = FALSE)
   coords <- geojson_parsed$features[[1]]$geometry$coordinates[[1]] # first ring
   df <- as.data.frame(do.call(rbind, lapply(coords, function(x) unlist(x))),
@@ -27,7 +27,7 @@ drawCarea <- function(lat, lng) {
 }
 
 drawCareaCid <- function(cid) {
-  url <- paste0(cidapi,cid)
+  url <- paste0(cidapi,cid,"?fmt=nogrouping")
   print(url)
   geojson <- readLines(url, warn = FALSE) %>% paste(collapse = "\n")
   if (!startsWith(geojson, "location outside of")) {
